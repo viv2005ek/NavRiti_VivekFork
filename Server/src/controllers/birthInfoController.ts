@@ -29,7 +29,7 @@ export const analyzeBirthInfo = async (req: Request, res: Response) => {
     // Call Kundali API
     let kundaliResponse;
     try {
-      const response = await fetch('https://navriti-the-new-direction-1.onrender.com/kundali', {
+      const response = await fetch('http://localhost:8003/kundali', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(kundaliRequest),

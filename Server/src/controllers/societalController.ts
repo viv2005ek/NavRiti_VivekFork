@@ -52,7 +52,7 @@ const surveyQuestions: SurveySection[] = [
   }
 ];
 
-const FASTAPI_URL = "https://societal-31jo.onrender.com";
+const FASTAPI_URL = "http://localhost:8004";
 
 export const analyzeSocietal = async (req: Request, res: Response) => {
   let savedDocId: string | null = null;
