@@ -7,6 +7,7 @@ import LoginPage from "./Pages/Login";
 import SignupPage from "./Pages/Signup";
 import ProfilePage from "./Pages/Profile";
 import CelestialMapping from "./Pages/CelestialMapping";
+import Dashboard from "./Pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import StudentInputPage from "./Pages/StudentInput";
 import Loader from "./Pages/Loader";
@@ -95,6 +96,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <StudentInputPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
               </ProtectedRoute>
             }
           />
