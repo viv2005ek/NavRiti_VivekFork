@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ChevronLeft, ChevronRight, Wand2, Users, Globe, Target, 
-  Sparkles, Star, Award, CheckCircle, AlertTriangle, Zap, 
-  Brain, TrendingUp, BarChart3, Target as TargetIcon,
-  RefreshCw, Send, Save, History, Building, Stethoscope, Cpu,
+  Sparkles, Star, CheckCircle, AlertTriangle, Zap, 
+  Brain, BarChart3, Target as TargetIcon,
+  RefreshCw, Send, History, Building, Stethoscope, Cpu,
   X, Clock, PieChart
 } from 'lucide-react';
 import AppNavbar from '../components/AppNavbar.tsx';

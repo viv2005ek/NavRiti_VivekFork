@@ -13,6 +13,7 @@ import StudentInputPage from "./Pages/StudentInput";
 import Loader from "./Pages/Loader";
 import NotFound from "./Pages/NotFound";
 import CursorEffect from './components/CursorEffect';
+import { LoadingProvider } from "./components/LoadingConetxt";
 
 
 function App() {
@@ -50,6 +51,7 @@ function App() {
     <>
       <CursorEffect />
       <Router>
+      <LoadingProvider>
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<LandingPage />} />
@@ -110,6 +112,7 @@ function App() {
           {/* 404 Catch-all */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </LoadingProvider>
       </Router>
     </>
   );
