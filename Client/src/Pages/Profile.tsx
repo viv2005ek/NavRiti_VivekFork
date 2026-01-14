@@ -191,14 +191,14 @@ const ProfilePage = () => {
           
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">
             <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
-              Your Celestial
+            Identity & Journey
             </span>
             <br />
-            <span className="text-3xl md:text-4xl text-gray-300">Identity & Journey</span>
+            <span className="text-3xl md:text-4xl text-gray-300"></span>
           </h1>
           
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Explore your cosmic profile and journey metrics across the stars
+            Explore your profile and journey metrics 
           </p>
         </div>
 
@@ -218,7 +218,7 @@ const ProfilePage = () => {
                   </div>
                   <div>
                     <h2 className="text-3xl font-bold text-white">
-                      {profile?.name || 'Cosmic Navigator'}
+                      {profile?.name || 'Navigator'}
                     </h2>
                     <p className="text-gray-300 text-sm mt-1 flex items-center gap-2">
                       <Mail className="w-4 h-4" />
@@ -298,7 +298,7 @@ const ProfilePage = () => {
                               {getAccountAge()}
                             </span>
                           </div>
-                          <div className="text-xs text-gray-400">Days in Cosmos</div>
+                          <div className="text-xs text-gray-400">Days in app</div>
                         </div>
                       </div>
 
@@ -410,7 +410,7 @@ const ProfilePage = () => {
                               <Calendar className="w-4 h-4 text-amber-300" />
                             </div>
                             <div>
-                              <div className="text-xs text-gray-400">Joined Cosmos</div>
+                              <div className="text-xs text-gray-400">Joined </div>
                               <div className="text-sm font-semibold text-white">
                                 {profile.createdAt ? formatDate(profile.createdAt) : 'Unknown'}
                               </div>
@@ -434,7 +434,7 @@ const ProfilePage = () => {
 
                         <div className="p-3 rounded-xl backdrop-blur-sm bg-gray-900/40 border border-amber-500/20">
                           <div className="flex items-center justify-between mb-2">
-                            <div className="text-xs text-gray-400">Cosmic Journey Progress</div>
+                            <div className="text-xs text-gray-400"> Journey Progress</div>
                             <div className="text-sm font-semibold text-white">
                               {getAccountAge()} days
                             </div>
