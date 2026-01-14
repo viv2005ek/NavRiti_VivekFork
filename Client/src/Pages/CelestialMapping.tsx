@@ -824,7 +824,7 @@ function BirthInfoForm() {
             >
               <div className="text-center mb-10">
                 <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-4 text-indigo-300 text-[10px] font-bold tracking-widest uppercase">
-                  <Star className="w-3.5 h-3.5 mr-2 text-yellow-400" /> Genesis Coordinates
+                  <Star className="w-3.5 h-3.5 mr-2 text-yellow-400" />  Coordinates
                 </div>
                 <h2 className="text-4xl font-serif font-bold text-white">Birth Information</h2>
               </div>

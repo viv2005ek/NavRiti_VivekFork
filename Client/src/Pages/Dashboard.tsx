@@ -156,9 +156,9 @@ const Dashboard: React.FC = () => {
               <span className="text-sm font-medium text-indigo-300">Strategic Career Synthesis</span>
             </div>
             <h1 className="text-5xl font-bold text-white mb-2">
-              Professional <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Dashboard</span>
+                <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Dashboard</span>
             </h1>
-            <p className="text-gray-400 text-lg">Market Reality Analysis • 2026 Q1</p>
+            <p className="text-gray-400 text-lg">Market Reality Analysis </p>
           </motion.div>
 
           <motion.button

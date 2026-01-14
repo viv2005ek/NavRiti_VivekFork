@@ -786,7 +786,7 @@ const handleSubmit = async () => {
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
             className="inline-flex items-center px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-6 text-indigo-300 text-[10px] font-bold tracking-[0.3em] uppercase"
           >
-            <Sparkles className="w-3 h-3 mr-2 text-yellow-400" /> Voyager Registration
+            <Sparkles className="w-3 h-3 mr-2 text-yellow-400" /> Registration
           </motion.div>
           <h1 className="text-4xl md:text-5xl font-serif font-bold bg-gradient-to-r from-white via-indigo-100 to-purple-200 bg-clip-text text-transparent mb-4">
             Student Profile
@@ -1132,7 +1132,7 @@ const handleSubmit = async () => {
                   {submitStatus === 'submitting' ? (
                     <>
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Anchoring...
+                      Analyzing your Profile
                     </>
                   ) : (
                     <>
