@@ -12,6 +12,7 @@ import {
 import AppNavbar from '../components/AppNavbar.tsx';
 import Background from '../components/Background.tsx';
 import InputResult from './InputResult.tsx';
+import { useNavigate } from 'react-router-dom';
 
 /* =====================
    VALIDATORS (UPDATED)
@@ -423,6 +424,7 @@ const StudentInputPage = () => {
   const [ugInputMethod, setUgInputMethod] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [resultData, setResultData] = useState<any>(null);
+  const navigate = useNavigate();
 
   const [schoolData, setSchoolData] = useState({
     subject_preference: '',
@@ -624,7 +626,7 @@ const handleSubmit = async () => {
       
       const responseData = await response.json();
       resultData = responseData.ai_result || responseData;
-      setResultData(resultData);
+      //setResultData(resultData);
 
       // Save to localStorage for school
       saveToLocalStorage({
@@ -677,7 +679,7 @@ const handleSubmit = async () => {
       
       const responseData = await response.json();
       resultData = responseData.ai_result || responseData;
-      setResultData(resultData);
+      //setResultData(resultData);
 
       // Save to localStorage for UG manual
       saveToLocalStorage({
@@ -706,7 +708,7 @@ const handleSubmit = async () => {
       
       const responseData = await response.json();
       resultData = responseData.ai_result || responseData;
-      setResultData(resultData);
+      //setResultData(resultData);
 
       // Save to localStorage for CV upload
       saveToLocalStorage({
@@ -723,7 +725,10 @@ const handleSubmit = async () => {
     }
 
     setSubmitStatus('success');
-    showToast('Profile anchored to the stars.', 'success');
+    showToast('Profile has been generated.', 'success');
+    setTimeout(() => {
+      navigate('/Celestialmapping'); 
+    }, 1500);
     
     // Scroll to result
     setTimeout(() => {
@@ -736,7 +741,7 @@ const handleSubmit = async () => {
   } catch (error: any) {
     console.error('Submission error:', error);
     setSubmitStatus('error');
-    showToast(error.message || 'Celestial interference. Please try again.', 'error');
+    showToast(error.message || ' Please try again.', 'error');
   } finally {
     setSubmitLocked(false);
   }
@@ -959,7 +964,7 @@ const handleSubmit = async () => {
             {selectedLevel === 'undergraduate' && ugInputMethod === 'upload' && (
               <motion.div key="upload" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 pt-10 border-t border-white/5">
                 <div className="flex justify-between items-center px-2">
-                  <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest">PDF Dossier Transmission</span>
+                  <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest">PDF  Transmission</span>
                   <button 
                     onClick={() => {
                       setUgInputMethod('');
@@ -981,7 +986,7 @@ const handleSubmit = async () => {
                   />
                   <label htmlFor="cv-upload" className="cursor-pointer block">
                     <Upload className="w-12 h-12 mx-auto text-indigo-500/30 mb-4 group-hover:scale-110 transition-transform" />
-                    <p className="text-lg font-bold">{cvFile ? cvFile.name : "Select Celestial Ledger"}</p>
+                    <p className="text-lg font-bold">{cvFile ? cvFile.name : "Upload CV/Resume"}</p>
                     <p className="text-xs text-gray-500 mt-2 uppercase tracking-widest">Max 5MB • PDF Document</p>
                   </label>
                   {fieldErrors.cvFile && (
@@ -1131,7 +1136,7 @@ const handleSubmit = async () => {
                     </>
                   ) : (
                     <>
-                      {submitStatus === 'success' ? 'Aligned' : 'Submit Cosmic Profile'}
+                      {submitStatus === 'success' ? 'Aligned' : 'Submit Profile'}
                       <ChevronRight className="group-hover:translate-x-1 transition-transform" />
                     </>
                   )}

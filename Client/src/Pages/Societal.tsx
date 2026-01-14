@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import AppNavbar from '../components/AppNavbar.tsx';
 import Background from '../components/Background.tsx';
+import { useNavigate } from 'react-router-dom';
 
 type SurveySection = {
   section: string;
@@ -88,6 +89,7 @@ const CareerSurveyForm: React.FC = () => {
   const [serverResult, setServerResult] = useState<{ ok: boolean; data?: any; error?: string } | null>(null);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [storedHistory, setStoredHistory] = useState<any>(null);
+  const navigate = useNavigate();
 
   const currentSection = surveyData[currentStep];
   const totalSteps = surveyData.length;
@@ -284,7 +286,11 @@ const renderQuestionText = (text: string) => {
         data = { raw: text }; 
       }
 
-      setServerResult({ ok: true, data });
+      //setServerResult({ ok: true, data });
+      setTimeout(() => {
+        navigate('/Dashboard');
+      }, 1500);
+    
     } catch (err) {
       setServerResult({ ok: false, error: (err as Error).message || String(err) });
     } finally {

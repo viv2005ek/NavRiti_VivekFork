@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from 'react-router-dom';
 import {
   Save,
   RotateCcw,
@@ -406,6 +407,7 @@ export default function ParentForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showHistory, setShowHistory] = useState(false);
   const [historyData, setHistoryData] = useState<LocalStorageData | null>(null);
+  const navigate = useNavigate();
 
   // Load history on mount
   useEffect(() => {
@@ -468,7 +470,7 @@ export default function ParentForm() {
         throw new Error(data.message || `Server ${res.status}: ${res.statusText}`);
       }
 
-      setServerResult({ ok: true, data });
+      //setServerResult({ ok: true, data });
       
       // Save to localStorage only if successful - Store percentages as user input
       if (data.status === "success" && data.ai_response) {
@@ -489,7 +491,13 @@ export default function ParentForm() {
         };
         localStorage.setItem("parentalOutput", JSON.stringify(saveData));
         setHistoryData(saveData);
-      }
+        setTimeout(() => {
+          navigate('/Societal'); // Adjust this route to your target
+        }, 1500);
+        
+      }else {
+        setLoading(false); // Stop loader if the response structure is unexpected
+     }
 
     } catch (err) {
       setServerResult({ 

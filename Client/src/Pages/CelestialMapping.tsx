@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import AppNavbar from '../components/AppNavbar.tsx';
 import Background from '../components/Background.tsx';
+import { useNavigate } from 'react-router-dom';
 
 // --- Custom Toast Component ---
 const Toast = ({ message, type }: { message: string, type: 'error' | 'success' | 'warning' }) => (
@@ -492,6 +493,8 @@ function BirthInfoForm() {
     fullOutput: any;
   } | null>(null);
 
+  const navigate = useNavigate();
+
   // History state
   const [analysisHistory, setAnalysisHistory] = useState<any[]>([]);
 
@@ -673,11 +676,14 @@ function BirthInfoForm() {
         });
         
         setSubmitStatus('error');
-        setShowResults(true);
+        //setShowResults(true);
         return; // Exit here, don't save to localStorage
       } else {
         setSubmitStatus('success');
-        triggerToast('Stellar alignment complete!', 'success');
+        triggerToast('alignment complete!', 'success');
+        setTimeout(() => {
+          navigate('/ParentForm');
+        }, 1500);
       }
       
       // Extract data from response
@@ -709,7 +715,7 @@ function BirthInfoForm() {
         triggerToast('Analysis completed but no career data was found.', 'warning');
       }
       
-      setShowResults(true);
+      //setShowResults(true);
       
     } catch (error: any) {
       console.error('Submission error:', error);
@@ -745,7 +751,7 @@ function BirthInfoForm() {
       });
       
       // ❌ REMOVED: saveToLocalStorage(requestBody, errorOutput);
-      setShowResults(true);
+      //setShowResults(true);
     }
   };
 
