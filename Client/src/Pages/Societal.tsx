@@ -4,13 +4,14 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ChevronLeft, ChevronRight, Wand2, Users, Globe, Target, 
-  Sparkles, Star, Award, CheckCircle, AlertTriangle, Zap, 
-  Brain, TrendingUp, BarChart3, Target as TargetIcon,
-  RefreshCw, Send, Save, History, Building, Stethoscope, Cpu,
+  Sparkles, Star, CheckCircle, AlertTriangle, Zap, 
+  Brain, BarChart3, Target as TargetIcon,
+  RefreshCw, Send, History, Building, Stethoscope, Cpu,
   X, Clock, PieChart
 } from 'lucide-react';
 import AppNavbar from '../components/AppNavbar.tsx';
 import Background from '../components/Background.tsx';
+import { useNavigate } from 'react-router-dom';
 
 type SurveySection = {
   section: string;
@@ -88,6 +89,7 @@ const CareerSurveyForm: React.FC = () => {
   const [serverResult, setServerResult] = useState<{ ok: boolean; data?: any; error?: string } | null>(null);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [storedHistory, setStoredHistory] = useState<any>(null);
+  const navigate = useNavigate();
 
   const currentSection = surveyData[currentStep];
   const totalSteps = surveyData.length;
@@ -284,7 +286,11 @@ const renderQuestionText = (text: string) => {
         data = { raw: text }; 
       }
 
-      setServerResult({ ok: true, data });
+      //setServerResult({ ok: true, data });
+      setTimeout(() => {
+        navigate('/Dashboard');
+      }, 1500);
+    
     } catch (err) {
       setServerResult({ ok: false, error: (err as Error).message || String(err) });
     } finally {
@@ -403,7 +409,7 @@ const renderQuestionText = (text: string) => {
                     <h3 className="text-2xl font-bold text-white">
                       Societal Influence Analysis Complete
                     </h3>
-                    <p className="text-emerald-100 text-sm">Your cosmic community influences have been analyzed</p>
+                    <p className="text-emerald-100 text-sm">Your community influences have been analyzed</p>
                   </div>
                 </div>
                 <div className="text-emerald-100/80 text-sm font-mono bg-white/10 px-3 py-1 rounded-lg">
@@ -667,14 +673,14 @@ const renderQuestionText = (text: string) => {
           
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">
             <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
-              Cosmic Community
+              Social & Cultural Influences
             </span>
             <br />
-            <span className="text-3xl md:text-4xl text-gray-300">Chart Your Social & Cultural Influences</span>
+            <span className="text-3xl md:text-4xl text-gray-300"></span>
           </h1>
           
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Discover how societal factors shape your career path. Rate each statement to reveal your cosmic connections.
+            Discover how societal factors shape your career path. Rate each statement to reveal your connections.
           </p>
         </motion.div>
 
@@ -1016,7 +1022,7 @@ const renderQuestionText = (text: string) => {
                     <AlertTriangle className="text-rose-400" size={24} />
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold text-white mb-2">Cosmic Connection Failed</h3>
+                    <h3 className="text-xl font-semibold text-white mb-2"> Connection Failed</h3>
                     <p className="text-rose-200/80">
                       {serverResult.error || "The stars could not align. Please try again."}
                     </p>

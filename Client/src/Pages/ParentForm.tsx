@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from 'react-router-dom';
 import {
   Save,
   RotateCcw,
@@ -406,6 +407,7 @@ export default function ParentForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showHistory, setShowHistory] = useState(false);
   const [historyData, setHistoryData] = useState<LocalStorageData | null>(null);
+  const navigate = useNavigate();
 
   // Load history on mount
   useEffect(() => {
@@ -468,7 +470,7 @@ export default function ParentForm() {
         throw new Error(data.message || `Server ${res.status}: ${res.statusText}`);
       }
 
-      setServerResult({ ok: true, data });
+      //setServerResult({ ok: true, data });
       
       // Save to localStorage only if successful - Store percentages as user input
       if (data.status === "success" && data.ai_response) {
@@ -489,7 +491,13 @@ export default function ParentForm() {
         };
         localStorage.setItem("parentalOutput", JSON.stringify(saveData));
         setHistoryData(saveData);
-      }
+        setTimeout(() => {
+          navigate('/Societal'); // Adjust this route to your target
+        }, 1500);
+        
+      }else {
+        setLoading(false); // Stop loader if the response structure is unexpected
+     }
 
     } catch (err) {
       setServerResult({ 
@@ -748,7 +756,7 @@ export default function ParentForm() {
           <div className="inline-flex items-center px-4 py-2 rounded-full backdrop-blur-sm bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 mb-6">
             <Users className="w-4 h-4 text-indigo-300 mr-2" />
             <span className="text-sm font-medium bg-gradient-to-r from-indigo-300 to-purple-300 bg-clip-text text-transparent">
-              Family Constellation Input
+              Family  Input
             </span>
           </div>
           
@@ -757,7 +765,7 @@ export default function ParentForm() {
               Parental Influence
             </span>
             <br />
-            <span className="text-3xl md:text-4xl text-gray-300">Chart Your Family's Cosmic Preferences</span>
+            <span className="text-3xl md:text-4xl text-gray-300"></span>
           </h1>
           
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
@@ -845,19 +853,19 @@ export default function ParentForm() {
             options={[
               { 
                 value: "local", 
-                label: "Local Constellation", 
+                label: "Local ", 
                 description: "Same city or region",
                 icon: Home
               },
               { 
                 value: "national", 
-                label: "National Galaxy", 
+                label: "National", 
                 description: "Within the country",
                 icon: Flag
               },
               { 
                 value: "international", 
-                label: "Cosmic Expansion", 
+                label: "Global", 
                 description: "Global opportunities",
                 icon: Globe2
               }
@@ -884,7 +892,7 @@ export default function ParentForm() {
               </div>
               <div>
                 <h3 className="font-semibold text-white">Maximum Tuition per Year (₹)</h3>
-                <p className="text-gray-400 text-sm">Set your cosmic education budget</p>
+                <p className="text-gray-400 text-sm">Set your education budget</p>
               </div>
             </div>
             
@@ -948,8 +956,8 @@ export default function ParentForm() {
                     <Brain className="w-6 h-6 text-purple-300" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-white">Career Constellation & Cosmic Constraints</h2>
-                    <p className="text-gray-400 text-sm mt-1">Define avoided paths and your celestial influence</p>
+                    <h2 className="text-2xl font-bold text-white">Career & Constraints</h2>
+                    <p className="text-gray-400 text-sm mt-1">Define avoided paths and your celestial </p>
                   </div>
                 </div>
               </div>
@@ -961,8 +969,8 @@ export default function ParentForm() {
                       <Ban className="w-5 h-5 text-rose-300" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-white">Avoided Constellations (Professions)</h3>
-                      <p className="text-gray-400 text-sm">Paths outside your family's celestial alignment</p>
+                      <h3 className="font-semibold text-white">Avoided Professions</h3>
+                      <p className="text-gray-400 text-sm">Paths outside your family's alignment</p>
                     </div>
                   </div>
                   
@@ -974,7 +982,7 @@ export default function ParentForm() {
                   />
                   
                   <div className="text-xs text-gray-500 mt-2">
-                    These cosmic paths will be filtered from recommendations. Separate constellations with commas.
+                    These  paths will be filtered from recommendations. Separate constellations with commas.
                   </div>
                 </div>
 
@@ -988,7 +996,7 @@ export default function ParentForm() {
                     error={errors.riskTolerance}
                   />
                   <RangeInput 
-                    label="Parental Cosmic Influence" 
+                    label="Parental Influence" 
                     value={weightOnParent} 
                     onChange={setWeightOnParent} 
                     icon={Sparkles}
@@ -1013,7 +1021,7 @@ export default function ParentForm() {
                 className="relative group flex items-center justify-center gap-3 px-6 py-3 rounded-xl backdrop-blur-sm bg-gradient-to-r from-gray-800/40 to-gray-900/40 border border-gray-700 hover:border-gray-600 text-gray-300 hover:text-white transition-all duration-300 w-full sm:w-auto"
               >
                 <RotateCcw size={18} className="relative z-10" />
-                <span className="relative z-10 font-medium">Reset Cosmic Alignment</span>
+                <span className="relative z-10 font-medium">Reset  Alignment</span>
               </button>
               
               <button 
@@ -1022,7 +1030,7 @@ export default function ParentForm() {
                 className="relative group flex items-center justify-center gap-3 px-6 py-3 rounded-xl backdrop-blur-sm bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 hover:border-purple-400/50 text-purple-300 hover:text-white transition-all duration-300 w-full sm:w-auto"
               >
                 <Wand2 size={18} className="relative z-10" />
-                <span className="relative z-10 font-medium">Random Celestial Alignment</span>
+                <span className="relative z-10 font-medium">Random Alignment</span>
               </button>
             </div>
 
@@ -1042,7 +1050,7 @@ export default function ParentForm() {
                 ) : (
                   <>
                     <Star size={20} className="group-hover:rotate-180 transition-transform duration-500" />
-                    <span>Submit to Cosmos</span>
+                    <span>Submit</span>
                     <Save size={20} className="group-hover:scale-110 transition-transform" />
                   </>
                 )}

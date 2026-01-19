@@ -79,12 +79,6 @@ const AppNavbar = ({ showAuthLinks = true }: AppNavbarProps) => {
       description: 'Welcome Portal'
     },
     { 
-      name: 'Dashboard', 
-      path: '/Dashboard', 
-      icon: <LayoutDashboard className="w-4 h-4" />,
-      description: 'Overview Panel'
-    },
-    { 
       name: 'Input', 
       path: '/Input', 
       icon: <Compass className="w-4 h-4" />,
@@ -107,6 +101,12 @@ const AppNavbar = ({ showAuthLinks = true }: AppNavbarProps) => {
       path: '/Societal', 
       icon: <Globe className="w-4 h-4" />,
       description: 'Social Context'
+    },
+    { 
+      name: 'Dashboard', 
+      path: '/Dashboard', 
+      icon: <LayoutDashboard className="w-4 h-4" />,
+      description: 'Overview Panel'
     },
     ...(showAuthLinks
       ? [

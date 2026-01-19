@@ -1,0 +1,14 @@
+# Python environment
+venv/
+__pycache__/
+*.py[cod]
+
+# Credentials
+.env
+
+# Local Data / Logs
+*.log
+local_storage_dump/
+
+# OS specific
+.DS_Store

@@ -7,11 +7,13 @@ import LoginPage from "./Pages/Login";
 import SignupPage from "./Pages/Signup";
 import ProfilePage from "./Pages/Profile";
 import CelestialMapping from "./Pages/CelestialMapping";
+import Dashboard from "./Pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import StudentInputPage from "./Pages/StudentInput";
 import Loader from "./Pages/Loader";
 import NotFound from "./Pages/NotFound";
 import CursorEffect from './components/CursorEffect';
+import { LoadingProvider } from "./components/LoadingConetxt";
 
 
 function App() {
@@ -49,6 +51,7 @@ function App() {
     <>
       <CursorEffect />
       <Router>
+      <LoadingProvider>
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<LandingPage />} />
@@ -98,9 +101,18 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/Dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
           {/* 404 Catch-all */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </LoadingProvider>
       </Router>
     </>
   );
