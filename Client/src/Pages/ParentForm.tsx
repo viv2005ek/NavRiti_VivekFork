@@ -409,6 +409,8 @@ export default function ParentForm() {
 
   // Load history on mount
   useEffect(() => {
+    console.log('\n=== parental ===');
+console.log(JSON.parse(localStorage.getItem('parentalOutput') || 'null'));
     const saved = localStorage.getItem("parentalOutput");
     if (saved) {
       try {
