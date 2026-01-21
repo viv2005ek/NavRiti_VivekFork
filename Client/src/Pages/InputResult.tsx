@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 
 /* =====================
-   TRUNCATE TEXT WITH READ MORE - FIXED
+TRUNCATE TEXT WITH READ MORE - FIXED
 ===================== */
 const TruncateText = ({ text, maxLength = 200 }: { text: string; maxLength?: number }) => {
   const [expanded, setExpanded] = useState(false);
