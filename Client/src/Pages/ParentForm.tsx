@@ -438,79 +438,81 @@ console.log(JSON.parse(localStorage.getItem('parentalOutput') || 'null'));
   };
 
   // --- API CALL ---
-  const onSubmit = async (ev?: React.FormEvent) => {
-    ev?.preventDefault();
-    setServerResult(null);
-    if (!validate()) return;
+ // --- API CALL --- FIXED VERSION
+const onSubmit = async (ev?: React.FormEvent) => {
+  ev?.preventDefault();
+  setServerResult(null);
+  if (!validate()) return;
 
-    // Convert percentages to 1-5 scale for backend
-    const payload: AIRequestBody = {
-      budget_max_tuition: Number(maxTuition),
-      importance_finances: percentageTo1To5(financial),
-      importance_job_security: percentageTo1To5(jobSecurity),
-      importance_prestige: percentageTo1To5(prestige),
-      parent_risk_tolerance: percentageTo1To5(riskTolerance),
-      influence_from_people: percentageTo1To5(weightOnParent),
-      location_preference: location,
-      migration_allowed: migrationAllowed,
-      unacceptable_careers: unacceptable.split(",").map(s => s.trim()).filter(Boolean)
-    };
-
-    try {
-      setLoading(true);
-      if (!SERVER_BASE) throw new Error("VITE_SERVER_BASE_API not configured");
-
-      const res = await fetch(`${SERVER_BASE}/parent/preferences`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-
-      const data = await res.json();
-      
-      if (!res.ok) {
-        throw new Error(data.message || `Server ${res.status}: ${res.statusText}`);
-      }
-
-      //setServerResult({ ok: true, data });
-      
-      // Save to localStorage only if successful - Store percentages as user input
-      if (data.status === "success" && data.ai_response) {
-        const saveData: LocalStorageData = {
-          timestamp: new Date().toISOString(),
-          input: {
-            financial_stability_weight: financial, // Store as percentage
-            job_security_weight: jobSecurity,      // Store as percentage
-            prestige_weight: prestige,            // Store as percentage
-            parent_risk_tolerance: riskTolerance, // Store as percentage
-            weight_on_parent_layer: weightOnParent, // Store as percentage
-            location_preference: location,
-            migration_willingness: migrationAllowed,
-            budget_constraints: { max_tuition_per_year: maxTuition },
-            unacceptable_professions: unacceptable.split(",").map(s => s.trim()).filter(Boolean)
-          },
-          output: data.ai_response
-        };
-        localStorage.setItem("parentalOutput", JSON.stringify(saveData));
-        setHistoryData(saveData);
-        setTimeout(() => {
-          navigate('/Societal'); // Adjust this route to your target
-        }, 1500);
-        
-      }else {
-        setLoading(false); // Stop loader if the response structure is unexpected
-     }
-
-    } catch (err) {
-      setServerResult({ 
-        ok: false, 
-        error: (err as Error).message || String(err),
-        timestamp: new Date().toISOString()
-      });
-    } finally {
-      setLoading(false);
-    }
+  // Convert percentages to 1-5 scale for backend
+  const payload: AIRequestBody = {
+    budget_max_tuition: Number(maxTuition),
+    importance_finances: percentageTo1To5(financial),
+    importance_job_security: percentageTo1To5(jobSecurity),
+    importance_prestige: percentageTo1To5(prestige),
+    parent_risk_tolerance: percentageTo1To5(riskTolerance),
+    influence_from_people: percentageTo1To5(weightOnParent),
+    location_preference: location,
+    migration_allowed: migrationAllowed,
+    unacceptable_careers: unacceptable.split(",").map(s => s.trim()).filter(Boolean)
   };
+
+  try {
+    setLoading(true);
+    if (!SERVER_BASE) throw new Error("VITE_SERVER_BASE_API not configured");
+
+    const res = await fetch(`${SERVER_BASE}/parent/preferences`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    
+    if (!res.ok) {
+      throw new Error(data.message || `Server ${res.status}: ${res.statusText}`);
+    }
+
+    // ✅ FIRST: Set the server result (triggers UI if needed)
+    setServerResult({ ok: true, data });
+    
+    // ✅ Save to localStorage - Store percentages as user input
+    if (data.status === "success" && data.ai_response) {
+      const saveData: LocalStorageData = {
+        timestamp: new Date().toISOString(),
+        input: {
+          financial_stability_weight: financial, // Store as percentage
+          job_security_weight: jobSecurity,      // Store as percentage
+          prestige_weight: prestige,            // Store as percentage
+          parent_risk_tolerance: riskTolerance, // Store as percentage
+          weight_on_parent_layer: weightOnParent, // Store as percentage
+          location_preference: location,
+          migration_willingness: migrationAllowed,
+          budget_constraints: { max_tuition_per_year: maxTuition },
+          unacceptable_professions: unacceptable.split(",").map(s => s.trim()).filter(Boolean)
+        },
+        output: data.ai_response
+      };
+      
+      localStorage.setItem("parentalOutput", JSON.stringify(saveData));
+      setHistoryData(saveData);
+    }
+    
+    // ✅ Navigation happens LAST - after everything is saved
+    setTimeout(() => {
+      navigate('/Societal');
+    }, 1500);
+    
+  } catch (err) {
+    setServerResult({ 
+      ok: false, 
+      error: (err as Error).message || String(err),
+      timestamp: new Date().toISOString()
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   // --- LOAD HISTORY ---
   const loadHistory = () => {

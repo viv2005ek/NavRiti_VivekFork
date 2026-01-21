@@ -121,6 +121,7 @@ const CareerSurveyForm: React.FC = () => {
 
   // Store result in localStorage when we have it
  // Store result in localStorage when we have it
+
 useEffect(() => {
   if (serverResult?.ok && serverResult.data?.analysis?.original_response) {
     const result = serverResult.data.analysis.original_response;
@@ -252,52 +253,56 @@ const renderQuestionText = (text: string) => {
     };
   };
 
-  const submitSurvey = async () => {
-    setLoading(true);
-    setServerResult(null);
-    setSubmitted(true);
+ const submitSurvey = async () => {
+  setLoading(true);
+  setServerResult(null);
+  setSubmitted(true);
 
-    if (!SERVER_BASE) {
-      setServerResult({ ok: false, error: 'VITE_SERVER_BASE_API is not configured.' });
-      setLoading(false);
-      return;
+  if (!SERVER_BASE) {
+    setServerResult({ ok: false, error: 'VITE_SERVER_BASE_API is not configured.' });
+    setLoading(false);
+    return;
+  }
+
+  const payload = buildPayload();
+
+  try {
+    const res = await fetch(API_ROUTE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const text = await res.text();
+
+    if (!res.ok) {
+      const errText = text || res.statusText;
+      throw new Error(`Server ${res.status}: ${errText}`);
     }
 
-    const payload = buildPayload();
+    let data = null;
+    try { 
+      data = text ? JSON.parse(text) : null; 
+    } catch (e) { 
+      data = { raw: text }; 
+    }
 
-    try {
-      const res = await fetch(API_ROUTE, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      const text = await res.text();
-
-      if (!res.ok) {
-        const errText = text || res.statusText;
-        throw new Error(`Server ${res.status}: ${errText}`);
-      }
-
-      let data = null;
-      try { 
-        data = text ? JSON.parse(text) : null; 
-      } catch (e) { 
-        data = { raw: text }; 
-      }
-
-      //setServerResult({ ok: true, data });
-      setTimeout(() => {
-        navigate('/Dashboard');
-      }, 1500);
+    // Directly save to localStorage before navigation
+    if (data?.analysis?.original_response) {
+      storeResultInLocalStorage(data.analysis.original_response);
+    }
     
-    } catch (err) {
-      setServerResult({ ok: false, error: (err as Error).message || String(err) });
-    } finally {
-      setLoading(false);
-    }
-  };
-
+    // Navigate immediately
+    setTimeout(() => {
+      navigate('/Dashboard');
+    }, 1500);
+    
+  } catch (err) {
+    setServerResult({ ok: false, error: (err as Error).message || String(err) });
+  } finally {
+    setLoading(false);
+  }
+};
   const storeResultInLocalStorage = (resultData: any) => {
   // Check if this is an error response
   const isErrorResponse = 

@@ -614,146 +614,132 @@ function BirthInfoForm() {
 
   // Final submission to API
    // Final submission to API
-  const handleFinalSubmit = async () => {
-    if (submitLocked || submitStatus === 'submitting') return;
+ // Final submission to API - FIXED VERSION
+const handleFinalSubmit = async () => {
+  if (submitLocked || submitStatus === 'submitting') return;
+  
+  // Check if all personality traits are filled
+  const allTraitsFilled = Object.values(personalityTraits).every(trait => trait !== null);
+  if (!allTraitsFilled) {
+    triggerToast('Please rate all personality traits before submitting.', 'error');
+    return;
+  }
+  
+  setSubmitLocked(true);
+  setSubmitStatus('submitting');
+  
+  try {
+    const SERVER_BASE = import.meta.env.VITE_SERVER_BASE_API || 'http://localhost:5000/api';
     
-    // Check if all personality traits are filled
-    const allTraitsFilled = Object.values(personalityTraits).every(trait => trait !== null);
-    if (!allTraitsFilled) {
-      triggerToast('Please rate all personality traits before submitting.', 'error');
-      return;
+    // Prepare request exactly as backend expects
+    const requestBody = { 
+      birth_date: formData.birthDate,
+      birth_time: formData.birthTime,
+      birth_place: formData.birthPlace,
+      personality_traits: personalityTraits
+    };
+    
+    console.log('Submitting to:', `${SERVER_BASE}/birthinfo/analyze`);
+    
+    const response = await fetch(`${SERVER_BASE}/birthinfo/analyze`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+    
+    const result = await response.json();
+    
+    console.log('API Response:', result);
+    
+    if (!response.ok) {
+      throw new Error(result.message || `HTTP ${response.status}`);
     }
     
-    setSubmitLocked(true);
-    setSubmitStatus('submitting');
+    // Extract data from response
+    const detailedAnalysis = result.career_analysis?.detailed_analysis || [];
+    const finalRecommendations = result.final_recommendations || [];
     
-    try {
-      const SERVER_BASE = import.meta.env.VITE_SERVER_BASE_API || 'http://localhost:5000/api';
-      
-      // Prepare request exactly as backend expects
-      const requestBody = { 
-        birth_date: formData.birthDate,
-        birth_time: formData.birthTime,
-        birth_place: formData.birthPlace,
-        personality_traits: personalityTraits
-      };
-      
-      console.log('Submitting to:', `${SERVER_BASE}/birthinfo/analyze`);
-      
-      const response = await fetch(`${SERVER_BASE}/birthinfo/analyze`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+    // ✅ CHECK FOR VALID DATA FIRST
+    const hasValidData = (detailedAnalysis.length > 0 || finalRecommendations.length > 0);
+    
+    // ✅ SET ANALYSIS RESULTS FIRST (this triggers UI updates if needed)
+    setAnalysisResults({
+      detailed_analysis: detailedAnalysis,
+      final_recommendations: finalRecommendations,
+      inputData: requestBody,
+      fullOutput: result
+    });
+    
+    if (hasValidData) {
+      // ✅ SAVE TO LOCALSTORAGE (REPLACE old data)
+      const analysisData = {
+        id: Date.now(),
+        timestamp: new Date().toISOString(),
+        input: {
+          birth_date: requestBody.birth_date,
+          birth_time: requestBody.birth_time,
+          birth_place: requestBody.birth_place,
+          personality_traits: requestBody.personality_traits
         },
-        body: JSON.stringify(requestBody)
-      });
-      
-      const result = await response.json();
-      
-      console.log('API Response:', result);
-      
-      if (!response.ok) {
-        throw new Error(result.message || `HTTP ${response.status}`);
-      }
-      
-      // Handle different response structures
-      let detailedAnalysis = [];
-      let finalRecommendations = [];
-      let fullOutput = result;
-      
-      // Check for error in response (like timeout from backend)
-      if (result.error) {
-        // If API itself returned an error (like timeout), don't save
-        triggerToast(`Astrology service: ${result.error}`, 'warning');
-        
-        // Set results but DON'T save to localStorage
-        setAnalysisResults({
-          detailed_analysis: [],
-          final_recommendations: [],
-          inputData: requestBody,
-          fullOutput: result
-        });
-        
-        setSubmitStatus('error');
-        //setShowResults(true);
-        return; // Exit here, don't save to localStorage
-      } else {
-        setSubmitStatus('success');
-        triggerToast('alignment complete!', 'success');
-        setTimeout(() => {
-          navigate('/ParentForm');
-        }, 1500);
-      }
-      
-      // Extract data from response
-      if (result.career_analysis?.detailed_analysis) {
-        detailedAnalysis = result.career_analysis.detailed_analysis;
-      }
-      
-      if (result.final_recommendations) {
-        finalRecommendations = result.final_recommendations;
-      }
-      
-      // Set analysis results
-      setAnalysisResults({
-        detailed_analysis: detailedAnalysis,
-        final_recommendations: finalRecommendations,
-        inputData: requestBody,
-        fullOutput: result
-      });
-      
-      // ✅ ONLY SAVE TO LOCALSTORAGE IF WE HAVE VALID DATA
-      // Check if we have actual analysis data (not just error response)
-      const hasValidData = (detailedAnalysis.length > 0 || finalRecommendations.length > 0);
-      
-      if (hasValidData) {
-        // Save to localStorage (REPLACE old data)
-        saveToLocalStorage(requestBody, result);
-      } else {
-        // No valid data, show warning
-        triggerToast('Analysis completed but no career data was found.', 'warning');
-      }
-      
-      //setShowResults(true);
-      
-    } catch (error: any) {
-      console.error('Submission error:', error);
-      setSubmitStatus('error');
-      setSubmitLocked(false);
-      
-      if (error.message.includes('timed out') || error.message.includes('timeout')) {
-        triggerToast('The astrology service is taking longer than expected. Please try again.', 'warning');
-      } else {
-        triggerToast(error.message || 'Celestial interference. Please try again.', 'error');
-      }
-      
-      // ❌ DON'T SAVE TO LOCALSTORAGE ON ERROR
-      // Just show error state without saving
-      const requestBody = { 
-        birth_date: formData.birthDate,
-        birth_time: formData.birthTime,
-        birth_place: formData.birthPlace,
-        personality_traits: personalityTraits
+        output: {
+          detailed_analysis: detailedAnalysis,
+          final_recommendations: finalRecommendations,
+          full_output: result
+        }
       };
       
-      const errorOutput = {
-        error: error.message,
-        note: "API call failed",
-        timestamp: new Date().toISOString()
-      };
+      localStorage.setItem('celestial', JSON.stringify(analysisData));
+      setAnalysisHistory([analysisData]);
       
-      setAnalysisResults({
-        detailed_analysis: [],
-        final_recommendations: [],
-        inputData: requestBody,
-        fullOutput: errorOutput
-      });
-      
-      // ❌ REMOVED: saveToLocalStorage(requestBody, errorOutput);
-      //setShowResults(true);
+      triggerToast('Celestial analysis saved!', 'success');
+    } else {
+      // No valid data, show warning
+      triggerToast('Analysis completed but no career data was found.', 'warning');
     }
-  };
+    
+    setSubmitStatus('success');
+    
+    // ✅ NAVIGATE LAST (after everything is saved)
+    setTimeout(() => {
+      navigate('/ParentForm');
+    }, 1500);
+    
+  } catch (error: any) {
+    console.error('Submission error:', error);
+    setSubmitStatus('error');
+    setSubmitLocked(false);
+    
+    if (error.message.includes('timed out') || error.message.includes('timeout')) {
+      triggerToast('The astrology service is taking longer than expected. Please try again.', 'warning');
+    } else {
+      triggerToast(error.message || 'Celestial interference. Please try again.', 'error');
+    }
+    
+    // ❌ DON'T SAVE TO LOCALSTORAGE ON ERROR
+    const requestBody = { 
+      birth_date: formData.birthDate,
+      birth_time: formData.birthTime,
+      birth_place: formData.birthPlace,
+      personality_traits: personalityTraits
+    };
+    
+    const errorOutput = {
+      error: error.message,
+      note: "API call failed",
+      timestamp: new Date().toISOString()
+    };
+    
+    setAnalysisResults({
+      detailed_analysis: [],
+      final_recommendations: [],
+      inputData: requestBody,
+      fullOutput: errorOutput
+    });
+  }
+};
 
   const handleChange = (field: keyof typeof formData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
